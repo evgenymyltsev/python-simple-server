@@ -3,6 +3,7 @@
 ## docker:
 
 `make up` for docker up & `make down` for docker down
+`make test-up` for docker up & `make test-down` for docker down
 
 ## start:
 
@@ -14,4 +15,9 @@
 
 `alembic revision --autogenerate -m <Commit>`
 
-`alembic upgrade heads`
+`alembic upgrade head`
+
+## test:
+
+`make test-up`
+run with flags `pytest -v`
