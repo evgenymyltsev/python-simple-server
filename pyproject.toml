@@ -1,3 +1,44 @@
+[tool.poetry]
+name = "python-simple-server"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+package-mode = false
+packages = [{include = "*", from="src"}]
+
+[tool.poetry.scripts]
+start = "src.main:start"
+test = "tests.conftest:run"
+
+[tool.poetry.dependencies]
+python = "3.9.6"
+fastapi = "0.110.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+sqlalchemy = "2.0.29"
+pydantic = {extras = ["email"], version = "^2.6.4"}
+envparse = "0.2.0"
+psycopg2 = "2.9.5"
+asyncpg = "0.29.0"
+alembic = "1.13.1"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+starlette = "0.36.3"
+httpx = "0.27.0"
+greenlet = "3.0.3"
+bcrypt = "4.0.1"
+passlib = "1.7.4"
+python-multipart = "0.0.9"
+redis = "5.0.3"
+black = "24.3.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "8.1.1"
+pytest-asyncio = "0.23.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.pytest.ini_options]
 pythonpath = [
     ".", "src"
