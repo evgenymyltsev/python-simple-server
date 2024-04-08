@@ -4,15 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.auth.router import router as auth_router
 from src.cache import Cache
+from src.logger import logger
 from src.users.router import router as user_router
 
 
 async def lifespan(app: FastAPI):
     Cache.get_redis_client()
-    print("redis has connected")
+    logger.debug("redis has connected")
     yield
     Cache.close_redis_client()
-    print("redis has stopped")
+    logger.debug("redis has stopped")
 
 
 app = FastAPI(title="Auth Simple Server", lifespan=lifespan)

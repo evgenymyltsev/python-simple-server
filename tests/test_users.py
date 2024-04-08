@@ -18,5 +18,4 @@ async def test_get_users_unauthorized(ac: AsyncClient):
     response = await ac.get(
         "/users",
     )
-    print(response)
     assert response.status_code == 401

@@ -10,6 +10,7 @@ from src.auth.service import AuthService
 from src.auth.utils import get_tokens
 from src.cache import Cache
 from src.error import InternalServerError
+from src.logger import logger
 from src.users.schemas import SUser
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -18,11 +19,10 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 @router.post("/login", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
-        print("form_data > ", form_data)
-        user = await AuthService.get_user(form_data.username, form_data.password)
-        if Cache.get(form_data.username):
-            print("user from cache > ", Cache.get(form_data.username))
-            user = SUser.model_validate(json.loads(Cache.get(form_data.username)))
+        user_from_cache = Cache.get(form_data.username)
+        if user_from_cache:
+            logger.debug(f"user from cache > {user_from_cache}")
+            user = SUser.model_validate(json.loads(user_from_cache))
         else:
             user = await AuthService.get_user(form_data.username, form_data.password)
             if not user:
@@ -35,7 +35,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
                     },
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-            print("user from db > ", user.model_dump(), type(user))
+            logger.debug(f"user from db > {user}")
             Cache.set(form_data.username, user.model_dump_json())
         (access_token, refresh_token) = get_tokens(user.username)
         return {

@@ -26,8 +26,6 @@ DB_URL = env(
     f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
 )
 
-print(DB_URL)
-
 REDIS_URL = env("REDIS_URL", f"redis://{REDIS_HOST}:{REDIS_PORT}")
 SECRET_KEY = env.str("SECRET_KEY")
 ALGORITHM = env.str("ALGORITHM")

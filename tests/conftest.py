@@ -20,7 +20,7 @@ from src.database import Base, get_session
 from src.main import app
 
 DATABASE_URL_TEST = f"postgresql+asyncpg://{DB_USER_TEST}:{DB_PASSWORD_TEST}@{DB_HOST_TEST}:{DB_PORT_TEST}/{DB_NAME_TEST}"
-print(DATABASE_URL_TEST)
+
 engine_test = create_async_engine(DATABASE_URL_TEST, poolclass=NullPool, echo=True)
 async_session_maker = async_sessionmaker(
     engine_test, class_=AsyncSession, expire_on_commit=False

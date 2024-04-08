@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -5,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_session
 from src.error import InternalServerError
+from src.logger import logger
 from src.users.models import Role
 from src.users.schemas import SCreateUser, SUpdateUser, SUser
 from src.users.service import UserService
@@ -36,9 +38,11 @@ async def create_user(
         user_id = await UserService.add_user(data=body, session=session)
         return user_id
     except HTTPException as e:
+        logger.error(e)
         raise e
     except Exception as e:
-        raise InternalServerError(e)
+        logger.error(e)
+        raise InternalServerError
 
 
 @router.get("/{user_id}/", response_model=SUser)
