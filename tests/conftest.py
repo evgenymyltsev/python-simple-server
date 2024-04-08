@@ -58,3 +58,6 @@ async def ac() -> AsyncGenerator[AsyncClient, None]:
         base_url="http://test",
     ) as ac:
         yield ac
+
+def run():
+    pytest.main(['-v'])

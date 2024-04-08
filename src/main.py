@@ -1,15 +1,12 @@
-from contextlib import asynccontextmanager
-
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.router import router as auth_router
 from src.cache import Cache
 from src.users.router import router as user_router
 
 
-@asynccontextmanager
 async def lifespan(app: FastAPI):
     Cache.get_redis_client()
     print("redis has connected")
@@ -37,3 +34,7 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(auth_router)
+
+
+def start():
+    uvicorn.run("src.main:app", port=8000, reload=True)
