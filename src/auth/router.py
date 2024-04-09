@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 
-from config import ALGORITHM, SECRET_KEY
+from settings import settings
 from src.auth.schemas import RefreshToken, Token
 from src.auth.service import AuthService
 from src.auth.utils import get_tokens
@@ -51,7 +51,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(refresh_token: RefreshToken):
-    payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+    payload = jwt.decode(
+        refresh_token, settings.auth.secret_key, algorithms=[settings.auth.algorithm]
+    )
     username = payload.get("sub")
     (access_token, refresh_token) = get_tokens(username)
     return {

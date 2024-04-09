@@ -7,7 +7,7 @@ from jose import jwt
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import ALGORITHM, SECRET_KEY
+from settings import settings
 from src.auth.schemas import Token, TokenData
 from src.database import get_session
 from src.users.models import UserOrm
@@ -24,9 +24,9 @@ class UserService:
         token: Token = Depends(oauth2_scheme),
         session: AsyncSession = Depends(get_session),
     ) -> Union[SUser, None]:
-        # async with async_session() as session:
-        # async with session.begin():
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token, settings.auth.secret_key, algorithms=[settings.auth.algorithm]
+        )
         username: str = payload.get("sub")
         if username is None:
             return None

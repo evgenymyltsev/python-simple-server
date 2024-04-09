@@ -3,7 +3,7 @@ from typing import Union
 from redis import Redis
 from redis.commands.json.path import Path
 
-from config import REDIS_URL
+from settings import settings
 
 
 class Cache:
@@ -36,7 +36,9 @@ class Cache:
     @classmethod
     def get_redis_client(cls) -> Redis:
         if cls._redis_client is None:
-            cls._redis_client = Redis.from_url(REDIS_URL, decode_responses=True)
+            cls._redis_client = Redis.from_url(
+                settings.redis.redis_dsn, decode_responses=True
+            )
         return cls._redis_client
 
     @classmethod
