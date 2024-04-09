@@ -11,7 +11,7 @@ from src.users.models import Base
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_URL", settings.db.url)
+config.set_section_option(section, "DB_URL", settings.db.db_url)
 
 
 # Interpret the config file for Python logging.
