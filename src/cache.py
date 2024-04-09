@@ -1,5 +1,3 @@
-from typing import Union
-
 from redis import Redis
 from redis.commands.json.path import Path
 
@@ -10,7 +8,7 @@ class Cache:
     _redis_client = None
 
     @classmethod
-    def set(cls, key: str, value: Union[str, int, float]) -> None:
+    def set(cls, key: str, value: str | int | float) -> None:
         cls._redis_client.set(key, value)
 
     @classmethod
@@ -22,7 +20,7 @@ class Cache:
         return cls._redis_client.json().get(key)
 
     @classmethod
-    def get(cls, key: str) -> Union[str, int, float]:
+    def get(cls, key: str) -> str | int | float:
         return cls._redis_client.get(key)
 
     @classmethod

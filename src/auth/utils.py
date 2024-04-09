@@ -1,6 +1,5 @@
 import datetime
 from datetime import timedelta
-from typing import Optional
 
 from jose import JWTError, jwt
 
@@ -8,7 +7,7 @@ from settings import settings
 
 
 def create_access_token(
-    data: dict, expires_delta: Optional[timedelta] = timedelta(minutes=15)
+    data: dict, expires_delta: timedelta | None = timedelta(minutes=15)
 ) -> str:
     to_encode = data.copy()
     expire = datetime.datetime.now() + expires_delta
