@@ -30,6 +30,7 @@ passlib = "1.7.4"
 python-multipart = "0.0.9"
 redis = "5.0.3"
 black = "24.3.0"
+pydantic-settings = "^2.2.1"
 
 [tool.poetry.group.test.dependencies]
 pytest = "8.1.1"

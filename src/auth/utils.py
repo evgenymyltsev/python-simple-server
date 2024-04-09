@@ -4,12 +4,7 @@ from typing import Optional
 
 from jose import JWTError, jwt
 
-from config import (
-    ACCESS_TOKEN_EXPIRES_MINUTES,
-    ALGORITHM,
-    REFRESH_TOKEN_EXPIRES_MINUTES,
-    SECRET_KEY,
-)
+from settings import settings
 
 
 def create_access_token(
@@ -18,17 +13,19 @@ def create_access_token(
     to_encode = data.copy()
     expire = datetime.datetime.now() + expires_delta
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.auth.secret_key, algorithm=settings.auth.algorithm
+    )
     return encoded_jwt
 
 
 def get_tokens(username: str) -> tuple[str, str]:
     access_token = create_access_token(
         data={"sub": username},
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRES_MINUTES),
+        expires_delta=timedelta(minutes=settings.auth.access_token_expires_minutes),
     )
     refresh_token = create_access_token(
         data={"sub": username},
-        expires_delta=timedelta(minutes=REFRESH_TOKEN_EXPIRES_MINUTES),
+        expires_delta=timedelta(minutes=settings.auth.refresh_token_expires_minutes),
     )
     return (access_token, refresh_token)
