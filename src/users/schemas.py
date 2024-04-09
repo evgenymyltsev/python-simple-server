@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -48,6 +47,6 @@ class SUser(BaseModelConfig):
 
 
 class SUpdateUser(BaseModelConfig):
-    name: Optional[constr(strip_whitespace=True, min_length=1)] = None
-    email: Optional[EmailStr] = None
-    hashed_password: Optional[constr(min_length=5)] = None
+    name: constr(strip_whitespace=True, min_length=1) | None = None
+    email: EmailStr | None = None
+    hashed_password: constr(min_length=5) | None = None

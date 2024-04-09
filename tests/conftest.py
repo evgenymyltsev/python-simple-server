@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
 from fastapi.testclient import TestClient
@@ -9,7 +9,6 @@ from sqlalchemy.pool import NullPool
 from src.database import Base, get_session
 from src.main import app
 from tests.settings import settings
-
 
 engine_test = create_async_engine(
     settings.db.pg_dsn_test, poolclass=NullPool, echo=True

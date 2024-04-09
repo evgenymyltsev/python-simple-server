@@ -1,5 +1,4 @@
 import uuid
-from typing import Union
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -23,7 +22,7 @@ class UserService:
         cls,
         token: Token = Depends(oauth2_scheme),
         session: AsyncSession = Depends(get_session),
-    ) -> Union[SUser, None]:
+    ) -> SUser | None:
         payload = jwt.decode(
             token, settings.auth.secret_key, algorithms=[settings.auth.algorithm]
         )
@@ -67,7 +66,7 @@ class UserService:
     @classmethod
     async def update_user(
         cls, user_id: uuid.UUID, data: SUpdateUser, session: AsyncSession
-    ) -> Union[SUser, None]:
+    ) -> SUser | None:
         async with session.begin():
             user_dict = data.model_dump(exclude_none=True)
             stmt = (
@@ -103,7 +102,7 @@ class UserService:
 
     @classmethod
     async def get_user_by_field(
-        cls, field: str, value: Union[str, uuid.UUID], session: AsyncSession
+        cls, field: str, value: str | uuid.UUID, session: AsyncSession
     ):
         async with session.begin():
             query = select(UserOrm).where(getattr(UserOrm, field) == value)
