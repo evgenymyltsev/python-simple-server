@@ -13,20 +13,20 @@
 
 ## start:
 
-`uvicorn main:app --reload`
+`poetry run start`
 
 ## migrations
 
-`alembic init migrations`
+`poetry run alembic init migrations`
 
-`alembic revision --autogenerate -m <Commit>`
+`poetry run alembic revision --autogenerate -m <Commit>`
 
-`alembic upgrade head`
+`poetry run alembic upgrade head`
 
 ## test:
 
 `make test-up`
-run with flags `pytest -v`
+`poetry run test`
 
 ## pre commit setting:
 

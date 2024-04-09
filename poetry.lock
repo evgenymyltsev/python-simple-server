@@ -412,19 +412,6 @@ dnspython = ">=2.0.0"
 idna = ">=2.0.0"
 
 [[package]]
-name = "envparse"
-version = "0.2.0"
-description = "Simple environment variable parsing"
-optional = false
-python-versions = "*"
-files = [
-    {file = "envparse-0.2.0.tar.gz", hash = "sha256:4f3b9a27bb55d27f124eb4adf006fec05e4588891c9a054a183a112645056eb7"},
-]
-
-[package.extras]
-testing = ["pytest"]
-
-[[package]]
 name = "fastapi"
 version = "0.110.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -1634,4 +1621,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.2"
-content-hash = "3d3258ca94c47f72bcbecb81cb04298d2646b2e255ea62adb7c80c383ac321af"
+content-hash = "fcd9cd37100fc70c259a6d9e65842dbce0859a356a262387e8c71ec6fafab8f8"

@@ -1,27 +1,28 @@
-from envparse import Env
-from pydantic_settings import BaseSettings
-
-env = Env()
-env.read_envfile()
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class AuthSettings(BaseSettings):
-    secret_key: str = env.str("SECRET_KEY")
-    algorithm: str = env.str("ALGORITHM")
-    access_token_expires_minutes: int = env.int("ACCESS_TOKEN_EXPIRES_MINUTES")
-    refresh_token_expires_minutes: int = env.int("REFRESH_TOKEN_EXPIRES_MINUTES")
+class SettingsConfig(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
-class DBSettings(BaseSettings):
-    url: str = env.str("DB_URL")
-    pg_dsn: str = env.str("PG_DSN")
+class AuthSettings(SettingsConfig):
+    secret_key: str = Field("", env="SECRET_KEY")
+    algorithm: str = Field("", env="ALGORITHM")
+    access_token_expires_minutes: int = Field(2, env="ACCESS_TOKEN_EXPIRES_MINUTES")
+    refresh_token_expires_minutes: int = Field(8, env="REFRESH_TOKEN_EXPIRES_MINUTES")
 
 
-class RedisSettings(BaseSettings):
-    redis_dsn: str = env.str("REDIS_DSN")
+class DBSettings(SettingsConfig):
+    db_url: str = Field("", env="DB_URL")
+    pg_dsn: str = Field("", env="PG_DSN")
 
 
-class Settings(BaseSettings):
+class RedisSettings(SettingsConfig):
+    redis_dsn: str = Field("", env="REDIS_DSN")
+
+
+class Settings(SettingsConfig):
     db: DBSettings = DBSettings()
     redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
