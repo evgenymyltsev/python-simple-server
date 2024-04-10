@@ -8,7 +8,11 @@ from src.users.utils import Hasher
 
 class AuthService:
     @classmethod
-    async def get_user(cls, username: str, password: str) -> SUser | None:
+    async def get_user(
+        cls,
+        username: str,
+        password: str,
+    ):
         async with async_session() as session:
             async with session.begin():
                 query = select(UserOrm).where(UserOrm.username == username)
