@@ -35,7 +35,3 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(auth_router)
-
-
-def start():
-    uvicorn.run("src.main:app", port=8000, reload=True)
