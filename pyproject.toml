@@ -8,7 +8,7 @@ package-mode = false
 packages = [{include = "*", from="src"}]
 
 [tool.poetry.scripts]
-start = "src.main:start"
+dev = "src.console:dev"
 test = "tests.conftest:run"
 
 [tool.poetry.dependencies]
