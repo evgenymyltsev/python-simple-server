@@ -1,17 +1,19 @@
 import json
 
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 
+from logger import get_logger
 from settings import settings
 from src.auth.schemas import RefreshToken, Token
 from src.auth.service import AuthService
 from src.auth.utils import get_tokens
 from src.cache import Cache
 from src.error import InternalServerError
-from src.logger import logger
 from src.users.schemas import SUser
+
+logger = get_logger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
