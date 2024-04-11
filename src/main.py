@@ -1,3 +1,5 @@
+from typing import Generator
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,7 +11,7 @@ from src.users.router import router as user_router
 logger = get_logger(__name__)
 
 
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> Generator:
     Cache.get_redis_client()
     logger.critical("redis has connected")
     yield
@@ -21,7 +23,6 @@ app = FastAPI(title="Auth Simple Server", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    # dev only
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
