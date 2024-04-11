@@ -55,13 +55,14 @@ pycodestyle = "^2.11.1"
 pyflakes = "^3.2.0"
 
 [tool.black]
-inline-quotes = "double"
+line-length = 120
+
 
 [tool.flake8]
 exclude = [".git", ".venv", "__pycache__", "env", "venv"]
 inline-quotes = "double"
 max-line-length = 120
-ignore = "D200,D100,D101,D107,D103,I001,I005,I004,I003"
+ignore = "ANN101,ANN102,D200,D100,D101,D102,D107,D103,I001,I005,I004,I003"
 
 [tool.isort]
 profile = "black"

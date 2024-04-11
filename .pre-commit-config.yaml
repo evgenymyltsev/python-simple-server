@@ -25,7 +25,10 @@ repos:
         language: python
         types: [python]
         always_run: true
-        args: ["--ignore=D200,D100,D101,D107,D103,I001,I005,I004,I003"]
+        args:
+          [
+            "--ignore=ANN101,ANN102,D200,D100,D101,D102,D107,D103,I001,I005,I004,I003",
+          ]
       - id: black
         name: black
         entry: black

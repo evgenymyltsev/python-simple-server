@@ -10,12 +10,8 @@ from src.database import Base, get_session
 from src.main import app
 from tests.settings import settings
 
-engine_test = create_async_engine(
-    settings.db.pg_dsn_test, poolclass=NullPool, echo=True
-)
-async_session_maker = async_sessionmaker(
-    engine_test, class_=AsyncSession, expire_on_commit=False
-)
+engine_test = create_async_engine(settings.db.pg_dsn_test, poolclass=NullPool, echo=True)
+async_session_maker = async_sessionmaker(engine_test, class_=AsyncSession, expire_on_commit=False)
 Base.metadata.bind = engine_test
 
 

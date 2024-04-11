@@ -6,7 +6,7 @@ from jose import jwt
 
 from logger import get_logger
 from settings import settings
-from src.auth.schemas import RefreshToken, Token
+from src.auth.schemas import SRefreshToken, SToken
 from src.auth.service import AuthService
 from src.auth.utils import get_tokens
 from src.cache import Cache
@@ -18,8 +18,10 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/login", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+@router.post("/login", response_model=SToken)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+) -> dict[str, str]:
     try:
         user_from_cache = Cache.get(form_data.username)
         if user_from_cache:
@@ -51,15 +53,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise InternalServerError(e)
 
 
-@router.post("/refresh", response_model=Token)
-async def refresh_token(refresh_token: RefreshToken):
-    payload = jwt.decode(
-        refresh_token, settings.auth.secret_key, algorithms=[settings.auth.algorithm]
-    )
+@router.post("/refresh", response_model=SToken)
+async def refresh_token(refresh_token: SRefreshToken) -> SToken:
+    payload = jwt.decode(refresh_token, settings.auth.secret_key, algorithms=[settings.auth.algorithm])
     username = payload.get("sub")
-    (access_token, refresh_token) = get_tokens(username)
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-    }
+
+    return get_tokens(username)

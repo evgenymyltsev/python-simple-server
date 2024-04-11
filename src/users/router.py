@@ -21,7 +21,7 @@ http_forbidden_error = HTTPException(
 @router.post("", response_model=SUser)
 async def create_user(
     body: SCreateUser,
-):
+) -> SUser:
     try:
         user = await UserService.add_user(data=body)
         return user
@@ -34,7 +34,7 @@ async def create_user(
 @router.get("/{user_id}/", response_model=SUser)
 async def get_user_by_id(
     user_id: uuid.UUID,
-):
+) -> SUser:
     try:
         user = await UserService.get_user_by_field(field="user_id", value=user_id)
         return user
@@ -64,7 +64,7 @@ async def update_user(
     user_id: uuid.UUID,
     body: SUpdateUser,
     current_user: SUser = Depends(UserService.get_current_user),
-):
+) -> SUser:
     try:
         if current_user.role != Role.ADMIN and current_user.user_id != user_id:
             raise http_forbidden_error
@@ -80,7 +80,7 @@ async def update_user(
 async def delete_user(
     user_id: uuid.UUID,
     current_user: SUser = Depends(UserService.get_current_user),
-):
+) -> SUser:
     try:
         if current_user.role != Role.ADMIN and current_user.user_id != user_id:
             raise http_forbidden_error

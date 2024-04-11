@@ -12,15 +12,13 @@ class AuthService:
         cls,
         username: str,
         password: str,
-    ):
+    ) -> SUser | None:
         async with async_session() as session:
             async with session.begin():
                 query = select(UserOrm).where(UserOrm.username == username)
                 result = await session.execute(query)
                 user_model = result.scalar()
-                if user_model is None or not Hasher.verify_password(
-                    password, user_model.hashed_password
-                ):
+                if user_model is None or not Hasher.verify_password(password, user_model.hashed_password):
                     return None
                 user = SUser.model_validate(user_model)
                 return user

@@ -1,7 +1,7 @@
 from httpx import AsyncClient
 
 
-async def test_add_user(ac: AsyncClient):
+async def test_add_user(ac: AsyncClient) -> None:
     response = await ac.post(
         "/users",
         json={
@@ -14,7 +14,7 @@ async def test_add_user(ac: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_get_users_unauthorized(ac: AsyncClient):
+async def test_get_users_unauthorized(ac: AsyncClient) -> None:
     response = await ac.get(
         "/users",
     )

@@ -6,7 +6,7 @@ from jose import jwt
 from sqlalchemy import select, update
 
 from settings import settings
-from src.auth.schemas import Token, TokenData
+from src.auth.schemas import SToken, STokenData
 from src.database import async_session
 from src.users.models import UserOrm
 from src.users.schemas import SCreateUser, SUpdateUser, SUser
@@ -19,16 +19,12 @@ class UserService:
     @classmethod
     async def get_current_user(
         cls,
-        token: Token = Depends(oauth2_scheme),
+        token: SToken = Depends(oauth2_scheme),
     ) -> SUser | None:
-        payload = jwt.decode(
-            token, settings.auth.secret_key, algorithms=[settings.auth.algorithm]
-        )
+        payload = jwt.decode(token, settings.auth.secret_key, algorithms=[settings.auth.algorithm])
         username: str = payload.get("sub")
-        token_data = TokenData(username=username)
-        user_model = await cls.get_user_by_field(
-            field="username", value=token_data.username
-        )
+        token_data = STokenData(username=username)
+        user_model = await cls.get_user_by_field(field="username", value=token_data.username)
         user = SUser.model_validate(user_model)
         return user
 
@@ -36,7 +32,7 @@ class UserService:
     async def add_user(
         cls,
         data: SCreateUser,
-    ):
+    ) -> SUser | None:
         user_dict = data.model_dump()
         new_user_model = UserOrm(
             name=user_dict["name"],
@@ -55,7 +51,7 @@ class UserService:
     @classmethod
     async def get_all_users(
         cls,
-    ):
+    ) -> SUser | None:
         async with async_session() as session:
             async with session.begin():
                 query = select(UserOrm)
@@ -69,16 +65,11 @@ class UserService:
         cls,
         user_id: uuid.UUID,
         data: SUpdateUser,
-    ):
+    ) -> SUser | None:
         async with async_session() as session:
             async with session.begin():
                 user_dict = data.model_dump(exclude_none=True)
-                stmt = (
-                    update(UserOrm)
-                    .where(UserOrm.user_id == user_id)
-                    .values(**user_dict)
-                    .returning(UserOrm)
-                )
+                stmt = update(UserOrm).where(UserOrm.user_id == user_id).values(**user_dict).returning(UserOrm)
                 result = await session.execute(stmt)
                 user_model = result.scalar()
                 user = SUser.model_validate(user_model)
@@ -88,7 +79,7 @@ class UserService:
     async def delete_user_by_id(
         cls,
         user_id: uuid.UUID,
-    ):
+    ) -> SUser | None:
         async with async_session() as session:
             async with session.begin():
                 query = select(UserOrm).where(UserOrm.user_id == user_id)
@@ -104,7 +95,7 @@ class UserService:
         cls,
         field: str,
         value: str | uuid.UUID,
-    ):
+    ) -> SUser | None:
         async with async_session() as session:
             async with session.begin():
                 query = select(UserOrm).where(getattr(UserOrm, field) == value)
