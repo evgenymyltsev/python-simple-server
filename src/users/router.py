@@ -2,6 +2,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from logger import get_logger
 from src.error import InternalServerError
 from src.users.models import Role
 from src.users.schemas import SCreateUser, SUpdateUser, SUser
@@ -17,6 +18,8 @@ http_forbidden_error = HTTPException(
     detail="Only admin or current user can perform this action",
 )
 
+logger = get_logger(__name__)
+
 
 @router.post("", response_model=SUser)
 async def create_user(
@@ -27,7 +30,8 @@ async def create_user(
         return user
     except HTTPException as e:
         raise e
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         raise InternalServerError
 
 
@@ -39,8 +43,10 @@ async def get_user_by_id(
         user = await UserService.get_user_by_field(field="user_id", value=user_id)
         return user
     except HTTPException as e:
+        logger.error(e)
         raise e
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         raise InternalServerError
 
 
@@ -54,8 +60,10 @@ async def get_all_users(
         users = await UserService.get_all_users()
         return users
     except HTTPException as e:
+        logger.error(e)
         raise e
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         raise InternalServerError
 
 
@@ -71,8 +79,10 @@ async def update_user(
         user = await UserService.update_user(user_id=user_id, data=body)
         return user
     except HTTPException as e:
+        logger.error(e)
         raise e
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         raise InternalServerError
 
 
@@ -87,6 +97,8 @@ async def delete_user(
         user = await UserService.delete_user_by_id(user_id=user_id)
         return user
     except HTTPException as e:
+        logger.error(e)
         raise e
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         raise InternalServerError

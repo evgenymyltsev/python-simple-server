@@ -48,9 +48,11 @@ async def login_for_access_token(
             "token_type": "bearer",
         }
     except HTTPException as e:
+        logger.error(e)
         raise e
     except Exception as e:
-        raise InternalServerError(e)
+        logger.error(e)
+        raise InternalServerError
 
 
 @router.post("/refresh", response_model=SToken)

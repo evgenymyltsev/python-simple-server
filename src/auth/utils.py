@@ -3,8 +3,8 @@ from datetime import timedelta
 
 from jose import jwt
 
-from auth.schemas import SToken
 from settings import settings
+from src.auth.schemas import SToken
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = timedelta(minutes=15)) -> str:
