@@ -7,7 +7,7 @@ from settings import settings
 from src.auth.schemas import SToken
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = timedelta(minutes=15)) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = timedelta(minutes=20)) -> str:
     to_encode = data.copy()
     expire = datetime.datetime.now() + expires_delta
     to_encode.update({"exp": expire})

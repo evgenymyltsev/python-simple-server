@@ -1,12 +1,15 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from logger import get_logger
+from src.database import get_session
 from src.error import InternalServerError
-from src.users.models import Role
+from src.users.models import Role, UserOrm
 from src.users.schemas import SCreateUser, SUpdateUser, SUser
 from src.users.service import UserService
+from src.users.utils import Hasher
 
 router = APIRouter(
     prefix="/users",
@@ -33,6 +36,33 @@ async def create_user(
     except Exception as e:
         logger.error(e)
         raise InternalServerError
+
+
+# for testing Depends(get_session) start
+# for testing Depends(get_session) start
+@router.post("/create", response_model=SUser)
+async def create_user_test(body: SCreateUser, session: AsyncSession = Depends(get_session)) -> SUser:
+    try:
+        user_dict = body.model_dump()
+        new_user_model = UserOrm(
+            name=user_dict["name"],
+            email=user_dict["email"],
+            username=user_dict["username"].lower(),
+            hashed_password=Hasher.get_password_hash(user_dict["hashed_password"]),
+        )
+        session.add(new_user_model)
+        await session.flush()
+        await session.commit()
+        user = SUser.model_validate(new_user_model)
+        return user
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(e)
+        raise InternalServerError
+
+
+# for testing Depends(get_session) end
 
 
 @router.get("/{user_id}/", response_model=SUser)
