@@ -1,30 +1,47 @@
-default_stages: [commit]
-
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-merge-conflict
-      - id: detect-private-key
-      - id: debug-statements
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.1
-    hooks:
-      - id: pyupgrade
-        args: [--py310-plus]
-        exclude: ^.*\b(migrations)\b.*$
-
-  - repo: https://github.com/psf/black
-    rev: 24.3.0
-    hooks:
-      - id: black
-        exclude: ^.*\b(migrations)\b.*$
-
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+  - repo: local
     hooks:
       - id: autoflake
+        name: autoflake
+        entry: autoflake
+        language: python
+        "types": [python]
+        require_serial: true
+        args:
+          - "--in-place"
+          - "--remove-all-unused-imports"
+          - "--remove-duplicate-keys"
+          - "--remove-unused-variables"
+      - id: isort
+        name: isort
+        entry: isort
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        exclude: ^(tests/.*)$
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: python
+        types: [python]
+        always_run: true
+        args:
+          [
+            "--ignore=ANN101,ANN102,D200,D100,D101,D102,D103,D104,D107,I001,I005,I004,I003",
+          ]
+        exclude: ^(tests/.*)$
+      - id: black
+        name: black
+        entry: black
+        language: python
+        types: [python]
+        exclude: ^(tests/.*)$
+      - id: pytest
+        name: pytest
+        entry: pytest
+        args: ["--cov=src --cov-report=term --cov-branch -cov-fail-under=5"]
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true

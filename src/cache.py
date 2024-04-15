@@ -16,7 +16,7 @@ class Cache:
         cls._redis_client.json().set(key, Path.root_path(), value)
 
     @classmethod
-    def json_get(cls, key: str) -> dict:
+    def json_get(cls, key: str) -> dict | None:
         return cls._redis_client.json().get(key)
 
     @classmethod
@@ -34,9 +34,7 @@ class Cache:
     @classmethod
     def get_redis_client(cls) -> Redis:
         if cls._redis_client is None:
-            cls._redis_client = Redis.from_url(
-                settings.redis.redis_dsn, decode_responses=True
-            )
+            cls._redis_client = Redis.from_url(settings.redis.redis_dsn, decode_responses=True)
         return cls._redis_client
 
     @classmethod

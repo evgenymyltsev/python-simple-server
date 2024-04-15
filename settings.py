@@ -7,19 +7,19 @@ class SettingsConfig(BaseSettings):
 
 
 class AuthSettings(SettingsConfig):
-    secret_key: str = Field("", env="SECRET_KEY")
-    algorithm: str = Field("", env="ALGORITHM")
-    access_token_expires_minutes: int = Field(2, env="ACCESS_TOKEN_EXPIRES_MINUTES")
-    refresh_token_expires_minutes: int = Field(8, env="REFRESH_TOKEN_EXPIRES_MINUTES")
+    secret_key: str = Field("", json_schema_extra={"env": "SECRET_KEY"})
+    algorithm: str = Field("", json_schema_extra={"env": "ALGORITHM"})
+    access_token_expires_minutes: int = Field(2, json_schema_extra={"env": "ACCESS_TOKEN_EXPIRES_MINUTES"})
+    refresh_token_expires_minutes: int = Field(8, json_schema_extra={"env": "REFRESH_TOKEN_EXPIRES_MINUTES"})
 
 
 class DBSettings(SettingsConfig):
-    db_url: str = Field("", env="DB_URL")
-    pg_dsn: str = Field("", env="PG_DSN")
+    db_url: str = Field("", json_schema_extra={"env": "DB_URL"})
+    pg_dsn: str = Field("", json_schema_extra={"env": "PG_DSN"})
 
 
 class RedisSettings(SettingsConfig):
-    redis_dsn: str = Field("", env="REDIS_DSN")
+    redis_dsn: str = Field("", json_schema_extra={"env": "REDIS_DSN"})
 
 
 class Settings(SettingsConfig):

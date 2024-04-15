@@ -1,8 +1,7 @@
 import re
 from uuid import UUID
 
-from fastapi import HTTPException
-from pydantic import BaseModel, ConfigDict, EmailStr, constr, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, constr
 
 from src.users.models import Role
 
@@ -18,24 +17,6 @@ class SCreateUser(BaseModelConfig):
     email: EmailStr
     username: str
     hashed_password: str
-
-    @field_validator("name", "username")
-    def validate_letters(cls, value):
-        if not LETTER_MATCH_PATTERN.match(value):
-            raise HTTPException(
-                status_code=422,
-                detail=f" must contain only letters",
-            )
-        return value
-
-    @field_validator("hashed_password")
-    def validate_hashed_password(cls, value):
-        if len(value) < 5:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Hashed password must be at least5 characters long",
-            )
-        return value
 
 
 class SUser(BaseModelConfig):

@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
 
-class Token(BaseModel):
+class SToken(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str
 
 
-class RefreshToken(BaseModel):
+class SRefreshToken(BaseModel):
     refresh_token: str
 
 
-class TokenData(BaseModel):
+class STokenData(BaseModel):
     username: str | None = None
