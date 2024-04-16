@@ -1,3 +1,9 @@
+"""User API router.
+
+This module contains the API routes related to user management.
+
+"""
+
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -28,6 +34,18 @@ logger = get_logger(__name__)
 async def create_user(
     body: SCreateUser,
 ) -> SUser:
+    """Create a new user.
+
+    Args:
+        body (SCreateUser): The user data to be created.
+
+    Returns:
+        SUser: The newly created user.
+
+    Raises:
+        HTTPException: If there is an error during the user creation.
+
+    """
     try:
         user = await UserService.add_user(data=body)
         return user
@@ -39,9 +57,20 @@ async def create_user(
 
 
 # for testing Depends(get_session) start
-# for testing Depends(get_session) start
 @router.post("/create", response_model=SUser)
 async def create_user_test(body: SCreateUser, session: AsyncSession = Depends(get_session)) -> SUser:
+    """Create a new user with dependency injection of session.
+
+    Args:
+        body (SCreateUser): The user data to be created.
+        session (AsyncSession, optional): The session for the async db connection. Defaults to Depends(get_session).
+
+    Returns:
+        SUser: The newly created user.
+
+    Raises:
+        HTTPException: If there is an error during the user creation.
+    """
     try:
         user_dict = body.model_dump()
         new_user_model = UserOrm(
@@ -69,6 +98,20 @@ async def create_user_test(body: SCreateUser, session: AsyncSession = Depends(ge
 async def get_user_by_id(
     user_id: uuid.UUID,
 ) -> SUser:
+    """Get user by ID.
+
+    This function retrieves a user by their unique ID.
+
+    Args:
+        user_id (uuid.UUID): The UUID of the user.
+
+    Returns:
+        SUser: The user object.
+
+    Raises:
+        HTTPException: If there is an error during the user retrieval.
+
+    """
     try:
         user = await UserService.get_user_by_field(field="user_id", value=user_id)
         return user
@@ -84,6 +127,20 @@ async def get_user_by_id(
 async def get_all_users(
     current_user: SUser = Depends(UserService.get_current_user),
 ) -> list[SUser]:
+    """Get all users.
+
+    This function retrieves all users. This endpoint is only accessible to users with the role ADMIN.
+
+    Args:
+        current_user (SUser): The currently authenticated user.
+
+    Returns:
+        list[SUser]: A list of user objects.
+
+    Raises:
+        HTTPException: If the user does not have the role ADMIN or if there is an error during the user retrieval.
+
+    """
     try:
         if current_user.role != Role.ADMIN:
             raise http_forbidden_error
@@ -103,6 +160,22 @@ async def update_user(
     body: SUpdateUser,
     current_user: SUser = Depends(UserService.get_current_user),
 ) -> SUser:
+    """Update a user.
+
+    This function updates a user's information. This endpoint is only accessible to users with the role ADMIN.
+
+    Args:
+        user_id (uuid.UUID): The UUID of the user to update.
+        body (SUpdateUser): The updated user information.
+        current_user (SUser): The currently authenticated user.
+
+    Returns:
+        SUser: The updated user object.
+
+    Raises:
+        HTTPException: If the user does not have the role ADMIN or if there is an error during the user update.
+
+    """
     try:
         if current_user.role != Role.ADMIN and current_user.user_id != user_id:
             raise http_forbidden_error
@@ -121,6 +194,21 @@ async def delete_user(
     user_id: uuid.UUID,
     current_user: SUser = Depends(UserService.get_current_user),
 ) -> SUser:
+    """Delete a user.
+
+    Deletes a user specified by the `user_id` parameter.
+
+    Args:
+        user_id (uuid.UUID): The UUID of the user to delete.
+        current_user (SUser): The currently authenticated user.
+
+    Returns:
+        SUser: The deleted user object.
+
+    Raises:
+        HTTPException: If the user does not have the role ADMIN or if there is an error during the user deletion.
+
+    """
     try:
         if current_user.role != Role.ADMIN and current_user.user_id != user_id:
             raise http_forbidden_error

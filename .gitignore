@@ -8,9 +8,11 @@
 .env
 __pycache__/
 .pytest_cache
-*.log
+/log
 
 #pytest
-htmlcov
+coverage
 coverage.xml
 .coverage
+
+Dockerfile

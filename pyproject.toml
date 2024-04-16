@@ -63,17 +63,33 @@ line-length = 120
 exclude = [".git", ".venv", "__pycache__", "env", "venv", "tests/*"]
 inline-quotes = "double"
 max-line-length = 120
-ignore = "ANN101,ANN102,D200,D100,D101,D102,D103,D104,D107,I001,I005,I004,I003"
 
 [tool.isort]
 profile = "black"
 line_length = 120
+skip = [".gitignore", "Dockerfile", ".md"]
+
+[tool.autoflake]
+args = ["--in-place", "--remove-all-unused-imports", "--remove-unused-variables"]
 
 
 [tool.pytest.ini_options]
-addopts = "-v --cov=src --cov-report=term --cov-report=html --cov-branch --cov-fail-under=5"
-
 pythonpath = [
     ".", "src"
 ]
 asyncio_mode = "auto"
+addopts = "-v --cov=src --cov-report=term --cov-report=html"
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 20
+
+[tool.coverage.html]
+directory = "coverage"
+
