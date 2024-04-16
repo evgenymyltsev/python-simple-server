@@ -1,3 +1,12 @@
+"""This module contains the entry point of the application.
+
+It sets up the FastAPI application and defines the routes for authentication and user management.
+
+Attributes:
+    app (FastAPI): The FastAPI application instance.
+
+"""
+
 from typing import Generator
 
 from fastapi import FastAPI
@@ -12,6 +21,21 @@ logger = get_logger(__name__)
 
 
 async def lifespan(app: FastAPI) -> Generator:
+    """Provide lifespan functionality.
+
+    This function is called when the app is started and when it is shut down.
+    It yields control and performs the necessary setup and teardown operations.
+
+    Args:
+        app (FastAPI): The FastAPI application instance.
+
+    Yields:
+        None
+
+    Returns:
+        Generator: A generator object that yields control.
+
+    """
     Cache.get_redis_client()
     logger.critical("redis has connected")
     yield
@@ -35,5 +59,5 @@ app.add_middleware(
     ],
 )
 
-app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(user_router)
