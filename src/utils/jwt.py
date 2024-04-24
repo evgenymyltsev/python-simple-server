@@ -12,7 +12,7 @@ from datetime import timedelta
 from jose import jwt
 
 from settings import settings
-from src.auth.schemas import SToken
+from src.schemas.auth import SToken
 
 
 def jwt_decode(token: str) -> dict:

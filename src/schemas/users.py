@@ -8,14 +8,11 @@ Attributes:
 
 """
 
-import re
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, constr
 
-from src.users.models import Role
-
-LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
+from src.models.users import Role
 
 
 class BaseModelConfig(BaseModel):

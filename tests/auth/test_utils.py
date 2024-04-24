@@ -2,10 +2,9 @@ from datetime import timedelta
 
 import pytest
 
-from src.auth.utils import create_access_token, get_tokens
+from src.utils.jwt import create_access_token, get_tokens
 
 
-# Fixture example
 @pytest.fixture
 def sample_data():
     return {
