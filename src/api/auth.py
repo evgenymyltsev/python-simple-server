@@ -4,23 +4,22 @@ This module contains the FastAPI API router for authentication endpoints.
 
 Attributes:
     router (APIRouter): The APIRouter instance for authentication.
-
 """
 
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
+from jose import ExpiredSignatureError, JWTError
 
 from logger import get_logger
-from src.auth.schemas import SRefreshToken, SToken
-from src.auth.service import AuthService
-from src.auth.utils import get_tokens, jwt_decode
+from src.api.dependencies import users_service
 from src.cache import Cache
 from src.error import InternalServerError
-from src.users.schemas import SUser
-from src.users.service import UserService
+from src.schemas.auth import SToken
+from src.schemas.users import SUser
+from src.services.users import UsersService
+from src.utils.jwt import get_tokens, jwt_decode
 
 logger = get_logger(__name__)
 
@@ -30,8 +29,9 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 @router.post("/login", response_model=SToken)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
+    users_service: UsersService = Depends(users_service),
 ) -> dict[str, str]:
-    """Authenticate a user and returns an access token.
+    """Authenticate a user and return an access token.
 
     Args:
         form_data (OAuth2PasswordRequestForm): The request form containing the
@@ -52,13 +52,12 @@ async def login_for_access_token(
             logger.debug(f"user from cache > {user_from_cache}")
             user = SUser.model_validate(json.loads(user_from_cache))
         else:
-            user = await AuthService.get_user(form_data.username, form_data.password)
+            user = await users_service.get_auth_user(username=form_data.username, password=form_data.password)
             if not user:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail={
                         "status": status.HTTP_401_UNAUTHORIZED,
-                        "data": None,
                         "detail": "Incorrect username or password",
                     },
                     headers={"WWW-Authenticate": "Bearer"},
@@ -75,7 +74,7 @@ async def login_for_access_token(
 
 
 @router.post("/refresh", response_model=SToken)
-async def refresh_token(refresh_token: SRefreshToken) -> SToken:
+async def refresh_token(refresh_token: SToken) -> SToken:
     """Refresh a token using a refresh token.
 
     Args:
@@ -95,7 +94,7 @@ async def refresh_token(refresh_token: SRefreshToken) -> SToken:
 
 
 @router.get("/verify-email/")
-async def verify_email(token: str) -> SUser | None:
+async def verify_email(token: str, users_service: UsersService = Depends(users_service)) -> SUser | None:
     """Verify an email using a token.
 
     Args:
@@ -113,12 +112,12 @@ async def verify_email(token: str) -> SUser | None:
         user_email = payload.get("email")
         if not user_email:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
-        user = await UserService.update_email_verified(user_email, True)
+        user = await users_service.update_user(filter_by={"email": user_email}, data={"email_verified": True})
         return user
-    except jwt.ExpiredSignatureError as e:
+    except ExpiredSignatureError as e:
         logger.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Signature expired")
-    except jwt.JWTError as e:
+    except JWTError as e:
         logger.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
     except Exception as e:
